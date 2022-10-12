@@ -3,11 +3,11 @@
 
 Предназначена для работы из приложения сбера или через приложение от TUYA https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=ru&gl=US 
 
-После прошивки ( основанной на тасмота ) может работать c MQTT брокером и управлятся локально из Home Assitaint.
+После прошивки ( основанной на тасмота ) может работать c MQTT брокером и управлятся локально из Home Assitaint, без всяких облаков и других глюков.
 
-Программа для прошивки под Питон https://github.com/OpenBekenIOT/hid_download_py
+Программа для прошивки под питон https://github.com/OpenBekenIOT/hid_download_py ( ставим питон с офсайта )
 
-Или просто windows приложение https://github.com/openshwprojects/OpenBK7231T/blob/master/bk_writer1.60.zip
+Или просто windows приложение https://github.com/openshwprojects/OpenBK7231T/blob/master/bk_writer1.60.zip ( обязательно правильно выбрать чип - ни в коем случае не BK7231N или что-то еще. И работает не всегда под питоном все веселее ) 
 
 Прошивки и подробные инструкции от автора тут: https://github.com/openshwprojects/OpenBK7231T_App
 
@@ -17,6 +17,15 @@
 
 Например https://github.com/openshwprojects/OpenBK7231T_App/releases/download/1.12.103/OpenBK7231T_UA_1.12.103.bin
 
+Для бэкапа нужна прога для работы с SPI флешем.  
+Рекомендую NeoProgrammer ( https://4pda.to/forum/index.php?showtopic=884713&view=findpost&p=96411343 ),
+или Asprogrammer ( https://github.com/nofeletru/UsbAsp-flash )
+или еще куча разных других, но не все будут корректно определять флэш.
+[NeoProgrammer_2.2.0.10.zip](https://github.com/esnet146/rgb-cw-lamp-sber/files/9763350/NeoProgrammer_2.2.0.10.zip)
+[USBASP_USBISP_Driver_and_Firmware.zip](https://github.com/esnet146/rgb-cw-lamp-sber/files/9763354/USBASP_USBISP_Driver_and_Firmware.zip)
+
+
+Риски: сломать при разборке ( нужны прямые руки и немного инструмента ), при прошивке аккуратнее - не сотрите загрузчик, , не сотрите калибровки ( всегда можно восстановить из полного бэкапа, даже чужого, если дадут, но только через spi программатор )
 
 Упаковка и маркировка
 
@@ -78,7 +87,54 @@
 
 ![photo_5345780381711974440_y](https://user-images.githubusercontent.com/64173457/195275589-a5aa3367-8504-4cd9-802f-dfdd666ca6b7.jpg)
 
+Паятся тонкими проводами ( МГТФ или обмоточный с катушек ) никогда не дергать во избежании отрыва TP от платы. потом будет значительно сложнее подключится.
+
+![msg1652874704-36684](https://user-images.githubusercontent.com/64173457/195297084-1559ecaa-66ca-40a8-9039-7b7925e17588.jpg)
+
+Для перевода чипа в режим доступа к памяти для программы нужен скрипт, набросал вот такой:
+```
+{$ INIT_AND_READ_FLASH_ID}
+begin
+  ID:= CreateByteArray(4);
+  RESP:= CreateByteArray(250);
+  if not SPIEnterProgMode(_SPI_SPEED_MAX) then LogPrint('Error setting SPI speed');
+  LogPrint ('Read JEDEC ID');
+    // init SPI
+  for i:=0 to 250 do
+  begin
+    SPIWrite (0, 1, $D2);
+    ProgressBar(1);
+  end;
+    // read response
+  SPIRead(1, 3, ID);
+    // logprint('RESP: ' + inttohex((GetArrayItem(RESP, 0)),2)+ inttohex((GetArrayItem(RESP, 1)),2));
+    // read ID to test installation
+  SPIWrite (0, 4, $9F, $00, $00, $00);
+  SPIRead(1, 4, ID);
+  logprint('CHIP ID: ' + inttohex((GetArrayItem(ID, 2)),2) + inttohex((GetArrayItem(ID, 1)),2)+ inttohex((GetArrayItem(ID, 0)),2));
+  LogPrint ('End read JEDEC ID');
+  SPIExitProgMode ();
+end
+```
+Тайный смысл - послать в чип 250 сиволов D2 и прочитать идентификатор флэша. Это нужно сделать сразу после сброса ( или подачи питания на чип )
+Далее чип остается в режиме доступа к памяти пока не перезагрузим. нужно положить файл с таким содержимым в папку со скриптами ПО программатора
+
+Подключаем программатор, ( перемычка режима работы установлена ), загружаем скрипт, выбираем секцию
+Нажимаем на кнопку ( CEN на землю ), запускаем скрипт на исполнение и в тот же момент отпускаем кнопку ( убираем землю с CEN )
+Ждем цифр 15701 в логе программатора. если есть - отлично. если там в id чипа нули - повторяем пока не получится.
+
+Жмем кнопка "Detect" в ПО программатора и выбираем чип EN25Q16
+
+Жмем Read IC
 
 
-
+Currently selected: EN25QH16 [3.3V] 16 Mbits, 2 Mbytes
+---------------------------------------------------------------------------
+Current programmer: CH341 Black
+21:19:22
+Reading memory... Main Memory
+Success
+Execution time: 00:00:17.072
+CRC32 = 0x********
+4.Press File & Save
 
