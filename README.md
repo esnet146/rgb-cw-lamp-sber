@@ -11,7 +11,7 @@
 
 Прошивки и подробные инструкции от автора тут: https://github.com/openshwprojects/OpenBK7231T_App
 
-Открываем релизы, скачиваем UA файл под чип BK7231T
+Открываем [релизы](https://github.com/openshwprojects/OpenBK7231T_App/releases) , скачиваем UA файл под чип BK7231T
 
 ![image](https://user-images.githubusercontent.com/64173457/195286727-aeb4b799-60ca-4d8e-a934-6c399074276c.png)
 
