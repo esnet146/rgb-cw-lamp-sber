@@ -159,21 +159,31 @@ python uartprogram c:\temp\OpenBK7231T_UA_1.12.103.bin -d COM3 --baudrate 115200
  Если закончилось время ожидания прошивальщика - повторяем до достижения нужного результата.
  ![image](https://user-images.githubusercontent.com/64173457/195309879-bd15b9c7-cfc6-493b-8651-3f21447e5391.png)
  
- После прошивки запустится точка доступа с открытой сетью. подключаемся. по адресу 192.168.4.1 будет web-морда конфигуратора.
- 
+После прошивки запустится точка доступа с открытой сетью. подключаемся. по адресу 192.168.4.1 будет web-морда конфигуратора.
+
+![image](https://user-images.githubusercontent.com/64173457/195342867-c27c0ca4-9699-4378-9ec5-a66e00a921f2.png)
+
 Настраиваем: 
 ```
 Configure module:
 P24 выбираем BP1658CJ_DAT
 P26 выбираем BP1658CJ_CLK
 ```
+![image](https://user-images.githubusercontent.com/64173457/195343274-297fda76-9396-421d-85a0-cfdfbd335ca9.png)
+
 Configure General:
 
 Ставим галочку на Flag4 ( Если нужно включать в предыдущем состоянии при подаче питания то и галочку на flag12 )
 
-Startup command:
+![image](https://user-images.githubusercontent.com/64173457/195343548-96e13e51-394d-47f5-b98c-3dc9d490374f.png)
 
-BP1658CJ_Map 2 1 0 4 3 ( порядок цветов у меня так, если нужно можно изменить. 01234 это будет rgbcw )
+
+Change Startup command text:
+
+BP1658CJ_Map 2 1 0 4 3 ( порядок цветов. у меня так, если нужно можно изменить: 01234 это будет rgbcw )
+
+![image](https://user-images.githubusercontent.com/64173457/195343784-6b725f3e-a000-4bbe-8d0c-765356b43391.png)
+
 
 Прописываем ip MQTT брокера, топик, логин, пароль. Само в Home assistaint не приползет. Нужно прописать в configuration.yaml как-то так, например, исправивь имя топика
 ```
