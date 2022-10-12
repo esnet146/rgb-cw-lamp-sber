@@ -46,7 +46,7 @@
 
 ![msg1652874704-36676](https://user-images.githubusercontent.com/64173457/195271157-b295cb1f-8b05-4677-a5ba-f25deebadec6.jpg)
 
-Снимаем резьбовой контакт цоколя, аккуратно тупын ножом сдвигая по кругу, потихоньку, ничего не сгибая и прорезая
+Снимаем резьбовой контакт цоколя, аккуратно тупым ножом сдвигая с корпуса по кругу, потихоньку, ничего не сгибая и не прорезая
 
 ![msg1652874704-36677](https://user-images.githubusercontent.com/64173457/195271650-26155e1a-7540-4149-a99d-919bc20b6f52.jpg)
 ![msg1652874704-36678](https://user-images.githubusercontent.com/64173457/195271686-ac7d7af9-5cf1-4899-b422-4e10750d9535.jpg)
@@ -79,7 +79,7 @@
 
 ![image](https://user-images.githubusercontent.com/64173457/195288277-49069350-1e15-4f58-a919-fc451d045431.png)
 
-Подключаем к модулю 4 провода шины SPI, CEN и сразу первый UART
+Подключаем к модулю 4 провода шины SPI, CEN, сразу первый UART и питание ( внешнее 3,3 вольта или с CH243a )
 
 ![image](https://user-images.githubusercontent.com/64173457/195291562-6e441003-2683-44fb-862b-d4bfd16b6061.png)
 
@@ -161,6 +161,51 @@ python uartprogram c:\temp\OpenBK7231T_UA_1.12.103.bin -d COM3 --baudrate 115200
  
  После прошивки запустится точка доступа с открытой сетью. подключаемся. по адресу 192.168.4.1 будет web-морда конфигуратора.
  
- 
+Настраиваем: 
+```
+Configure module:
+P24 выбираем BP1658CJ_DAT
+P26 выбираем BP1658CJ_CLK
+```
+Configure General:
+
+Ставим галочку на Flag4 ( Если нужно включать в предыдущем состоянии при подаче питания то и галочку на flag12 )
+
+Startup command:
+
+BP1658CJ_Map 2 1 0 4 3 ( порядок цветов у меня так, если нужно можно изменить. 01234 это будет rgbcw )
+
+Прописываем ip MQTT брокера, топик, логин, пароль. Само в Home assistaint не приползет. Нужно прописать в configuration.yaml как-то так, например, исправивь имя топика
+```
+mqtt:
+  light:
+  - unique_id: "Name_Id"
+    name: "Name"
+    rgb_command_template: "{{ '%02x%02x%02x' | format(red, green, blue)}}"
+    rgb_state_topic: "obkMAC/led_basecolor_rgb/get"
+    rgb_command_topic: "cmnd/obkMAC/led_basecolor_rgb"
+    rgb_value_template: "{{ value[0:2]|int(base=16) }},{{ value[2:4]|int(base=16) }},{{ value[4:6]|int(base=16) }}"
+    command_topic: "cmnd/obkMAC/led_enableAll"
+    state_topic: "obkMAC/led_enableAll/get"
+    availability_topic: "obkMAC/connected"
+    payload_on: "1"
+    payload_off: "0"
+    brightness_command_topic: "cmnd/obkMAC/led_dimmer"
+    brightness_scale: 100
+    brightness_state_topic: "obkMAC/led_dimmer/get"
+    brightness_value_template: "{{value}}"
+    color_temp_command_topic: "cmnd/obkMAC/led_temperature"
+    color_temp_state_topic: "obkMAC/led_temperature/get"
+    retain: true
+```
+В итоге получается так:
+
+![image](https://user-images.githubusercontent.com/64173457/195317594-a0277494-b401-46f6-aa06-9c95890d3185.png)
+![image](https://user-images.githubusercontent.com/64173457/195317650-82e83b80-d128-4cc6-94a3-9272b836f527.png)
+![image](https://user-images.githubusercontent.com/64173457/195317714-3a7171c2-16bb-4f74-9c02-9f6460e6bd54.png)
+![image](https://user-images.githubusercontent.com/64173457/195317798-31f11951-de68-4c4c-abd0-afb4aa9b7a36.png)
+
+Выражаю огромную благодарность пользователям [btsimonh](https://github.com/btsimonh) и [Refuhr](https://github.com/Refuhr) !
+
 
 
