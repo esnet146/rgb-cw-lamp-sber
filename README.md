@@ -224,5 +224,111 @@ mqtt:
 
 Выражаю огромную благодарность пользователям [btsimonh](https://github.com/btsimonh) и [Refuhr](https://github.com/Refuhr) !
 
+P.S.
+Прошивка в аналог esphome - [libretuya](https://github.com/kuba2k2/libretuya)
+```
+substitutions:
+  board_name: sb-e14-7
+
+esphome:
+  name: $board_name
+  project:
+    name: "С37-E14/Sber.LibreTuya"
+    version: "WBLC9(BK7231T)"
+  comment: "Sber E14 спальня"
+
+
+libretuya:
+#  board: wb3l # wblc9
+  board: generic-bk7231t-qfn32-tuya
+  framework:
+    version: dev
+preferences:
+  flash_write_interval: 3min
+
+api:
+  encryption:
+    key: !secret keyapi 
+
+ota:
+  password: !secret passwordota
+
+
+logger:
+  baud_rate: 0
+
+captive_portal:
+wifi:
+  ssid: !secret wifi1
+  password: !secret password1
+
+  ap:
+    ssid: "$board_name Hotspot"
+    password: !secret password1
+
+
+web_server:
+  port: 80  
+
+
+button:
+  - platform: restart
+    name: Reset.$board_name
+
+bp1658cj:
+  data_pin: P24
+  clock_pin: P26
+  max_power_color_channels: 12
+  max_power_white_channels: 3
+
+output:
+  - platform: bp1658cj
+    id: output_red
+    min_power: 0.00095
+    zero_means_zero: true
+    channel: 2
+  - platform: bp1658cj
+    id: output_green
+    min_power: 0.00095
+    zero_means_zero: true
+    channel: 1
+  - platform: bp1658cj
+    id: output_blue
+    min_power: 0.00095
+    zero_means_zero: true
+    channel: 0
+  - platform: bp1658cj
+    id: output_cold_white
+    min_power: 0.00095
+    zero_means_zero: true
+    channel: 3
+  - platform: bp1658cj
+    id: output_warm_white
+    min_power: 0.00095
+    zero_means_zero: true
+    channel: 4
+
+
+light:
+  - platform: rgbww
+    name:  sber_e14_7
+    id: light1
+    red: output_red
+    green: output_green
+    blue: output_blue
+    cold_white: output_cold_white
+    warm_white: output_warm_white
+    cold_white_color_temperature: 6500.0 K
+    warm_white_color_temperature: 2700.0 K 
+    color_interlock: true
+    constant_brightness: true
+    restore_mode: RESTORE_AND_ON
+sensor:
+  - platform: wifi_signal
+    name: WiFi_Signal.$board_name
+  - platform: uptime
+    name: uptime_sensor.$board_name
+
+```
 
 
