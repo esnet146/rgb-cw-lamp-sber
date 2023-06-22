@@ -2,14 +2,19 @@
 Прошивка умной лампочки от Сбера на модуле WBLC9 (чип BK7231T) и драйвере BP1658
 
 PS.
+
 Если ничего не понятно: @esnet1
+
 1.Разбирать не обязательно, [можно шить по воздуху](https://docs.libretiny.eu/docs/flashing/tools/cloudcutter/)
+
 2.Шить можно или аналог [тасмоты](https://github.com/openshwprojects/OpenBK7231T_App) или аналог [esphome](https://github.com/kuba2k2/libretiny) - кому что больше нравится.
 
 
 Лампочка предназначена для работы из приложения сбера или через приложение от TUYA https://play.google.com/store/apps/details?id=com.tuya.smartlife&hl=ru&gl=US 
 
 После прошивки ( основанной на тасмота ) может работать c MQTT брокером и управлятся локально из Home Assitaint, без всяких облаков и других глюков.
+
+Описание процесса разборки и прошивки(OpenBeken, для libretiny почти аналогично, но есть другая программа для прошивки, конфиг под esphome в конце заметки):
 
 Программа для прошивки под питон https://github.com/OpenBekenIOT/hid_download_py ( ставим питон с офсайта )
 
