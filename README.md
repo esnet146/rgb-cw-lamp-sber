@@ -235,23 +235,22 @@ P.S.
 Прошивка в аналог esphome - [libretuya](https://github.com/kuba2k2/libretuya)
 ```
 substitutions:
-  board_name: sb-e14-7
+  board_name: sb-e14-0
 
 esphome:
   name: $board_name
   project:
-    name: "С37-E14/Sber.LibreTuya"
+    name: "SBDV-0020/Sber.LibreTuya"
     version: "WBLC9(BK7231T)"
-  comment: "Sber E14 спальня"
+  comment: "Sber E14 люстра группа 4"
 
 
-libretuya:
-#  board: wb3l # wblc9
+bk72xx:
   board: generic-bk7231t-qfn32-tuya
   framework:
     version: dev
 preferences:
-  flash_write_interval: 3min
+  flash_write_interval: 1min
 
 api:
   encryption:
@@ -274,9 +273,8 @@ wifi:
     password: !secret password1
 
 
-web_server:
-  port: 80  
-
+# web_server:
+#   port: 80  
 
 button:
   - platform: restart
@@ -285,7 +283,7 @@ button:
 bp1658cj:
   data_pin: P24
   clock_pin: P26
-  max_power_color_channels: 12
+  max_power_color_channels: 3
   max_power_white_channels: 3
 
 output:
@@ -307,18 +305,19 @@ output:
   - platform: bp1658cj
     id: output_cold_white
     min_power: 0.00095
+    max_power: 0.9
     zero_means_zero: true
     channel: 3
   - platform: bp1658cj
     id: output_warm_white
     min_power: 0.00095
+    max_power: 0.9
     zero_means_zero: true
     channel: 4
 
-
 light:
   - platform: rgbww
-    name:  sber_e14_7
+    name:  sber_e14_0
     id: light1
     red: output_red
     green: output_green
@@ -335,6 +334,9 @@ sensor:
     name: WiFi_Signal.$board_name
   - platform: uptime
     name: uptime_sensor.$board_name
+text_sensor:
+  - platform: version
+    name: Version.$board_name
 
 ```
 
